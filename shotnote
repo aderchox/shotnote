@@ -1,0 +1,71 @@
+#dependency packages: imagemagick, wkhtmltopdf, xvfb(for Ubuntu users who are not connected to the X11 server)
+#by: [ aderchox [at] gmail [dot] com ]
+#June-17-2019
+
+function shotnote(){
+	echo -e "The shotnote is being created... It might take a while, please be patient."
+	
+	shotnotes_elements_dir="Joined Shotnotes Elements"
+	mkdir "$shotnotes_elements_dir" 2>/dev/null
+	
+	temp_html="
+	<html style='margin:0;padding:0'>
+		<head>
+		</head>
+		<body style='margin:0;padding:2px;'>
+	"
+	echo "$temp_html" > temp.html
+		
+	for shotnote in *.png; do
+	
+		width=$(identify -format "%w" "$shotnote")
+		height=$(identify -format "%h" "$shotnote")
+		w_times_h=$((width*height))
+	
+		if [[ $w_times_h -gt 500000 ]]
+			then
+			cp "$shotnote" "${shotnotes_elements_dir}/$shotnote"
+			convert -resize 700x700 "$shotnote" "$shotnote" #keeps the aspect ratio
+			shotnote_to_html="
+			<img style='border:3px solid #777; margin:30px 10px' src=\"${shotnote}\">
+			"
+		elif [[ $height -lt 500 ]]
+			then
+			shotnote_to_html="
+			<img style='border:3px solid #777; margin:40px 30px;' src=\"${shotnote}\">
+			"
+		else
+			shotnote_to_html="
+			<img style='border:3px solid #777; margin:30px 10px' src=\"${shotnote}\">
+			"
+		fi
+	
+	# uncomment the lines below in case you need horizontal lines between every two shots
+	# notice: sometimes two long shots might fit in one row, but enabling horizontal lines will make that impossible.
+		#shotnote_to_html="${shotnote_to_html}""
+		# <hr style=\"height:3px;border:none;color:#333;background-color:#333;\">
+		#"
+	
+		echo "$shotnote_to_html" >> temp.html
+	done
+	
+	temp_html="
+		</body>
+	</html>
+	"
+	echo "$temp_html" >> temp.html
+	
+	shotnote_name="shotnote_$(date '+%Y-%m-%d_%H %M %S').pdf"
+	
+	#use the commented script below instead of this script in case either you are connected to an X server or you're not using Ubuntu.
+	#(headless conversion(conversion from html to pdf without having connection to X server) is not available for the wkhtmltopdf package on Ubuntu repositories)
+	xvfb-run wkhtmltopdf temp.html "$shotnote_name" >/dev/null 2>/dev/null
+	#wkhtmltopdf temp.html "$shotnote_name" >/dev/null 2>/dev/null
+	
+	rm temp.html
+	
+	mv -n *.png "$shotnotes_elements_dir"/
+	rm *.png
+	
+	echo -e "shotnote created successfully.\n\tName: \"$shotnote_name\""
+}
