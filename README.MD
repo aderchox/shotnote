@@ -1,18 +1,25 @@
 ## Take screenshots (e.g while watching your video courses) and then use the ___shotnote___ command to join them together and keep them in a nicely ordered printable document for future reviews!
 
+__Example Usage:__
 
-In order to use "shotnote", take these steps:
+![Example Usage](shotnote.gif)
 
-1. install the dependency packages listed below:
+__How to Install__
+
+It's just a simple script. In order to use it, take these steps:
+
+1. First, install the dependency packages listed below:
 * imagemagick (necessary for everyone)
 * wkhtmltopdf (necessary for everyone)
 * xvfb (only for those not connected to an X server)
 
-2. add the source to the .bashrc file in your home directory
+2. Then add the content of the script to the .bashrc file in your home directory
 
-3. run "exec bash" to re-apply the .bashrc
+3. Run "exec bash" (to re-apply the .bashrc)
 
-4. Your life is easier now! cd (change directory) into the directory you keep your screenshots in, and run the command "_shotnote_".
+4. Your life is easier now! cd (change directory) to the directory in which you keep your screenshots, and run the command "_shotnote_".
+
+__NOTICE__: If you're using Windows, install WSL to have an actual Linux within your Windows(Read more: [Here](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
 
 __NOTICE__: Screenshots MUST be in PNG format for now. JPEG could be supported as well easily, but I didn't need it personally. :smile:
 
